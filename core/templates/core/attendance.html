@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3 class="mb-3">Mark Attendance</h3>
+<form method="get" class="row g-2 mb-4">
+  <div class="col-md-5">
+    <select name="course" class="form-select" required>
+      <option value="">Select course</option>
+      {% for c in courses %}
+        <option value="{{ c.id }}" {% if course and course.id == c.id %}selected{% endif %}>{{ c }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3"><input type="date" name="date" value="{{ date }}" class="form-control"></div>
+  <div class="col-md-2"><button class="btn btn-secondary" type="submit">Load students</button></div>
+</form>
+
+{% if course %}
+<form method="post">
+  {% csrf_token %}
+  <input type="hidden" name="course" value="{{ course.id }}">
+  <input type="hidden" name="date" value="{{ date }}">
+  <table class="table bg-white">
+    <thead><tr><th>Roll No</th><th>Name</th><th>Present</th><th>Absent</th></tr></thead>
+    <tbody>
+    {% for s in students %}
+      <tr>
+        <td>{{ s.roll_no }}</td><td>{{ s.full_name }}</td>
+        <td><input type="radio" name="status_{{ s.id }}" value="P" {% if s.current_status == 'P' %}checked{% endif %}></td>
+        <td><input type="radio" name="status_{{ s.id }}" value="A" {% if s.current_status == 'A' %}checked{% endif %}></td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4" class="text-muted text-center">No students in this department.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% if students %}<button class="btn btn-primary" type="submit">Save attendance</button>{% endif %}
+</form>
+{% endif %}
+{% endblock %}

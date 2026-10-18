@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3>{{ student.full_name }} ({{ student.roll_no }})</h3>
+  <a class="btn btn-outline-primary" href="{% url 'student_edit' student.pk %}">Edit</a>
+</div>
+<div class="row g-3">
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-header">Profile</div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Department: {{ student.department }}</li>
+        <li class="list-group-item">Year: {{ student.get_year_display }}</li>
+        <li class="list-group-item">Email: {{ student.email }}</li>
+        <li class="list-group-item">Phone: {{ student.phone|default:"-" }}</li>
+        <li class="list-group-item">Date of birth: {{ student.dob }}</li>
+        <li class="list-group-item">Admission date: {{ student.admission_date }}</li>
+        <li class="list-group-item">Address: {{ student.address|default:"-" }}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-7">
+    <div class="card mb-3">
+      <div class="card-header">Attendance</div>
+      <div class="card-body">
+        <p class="mb-1">{{ attendance_present }} present out of {{ attendance_total }} classes</p>
+        <progress class="w-100" value="{{ attendance_percent }}" max="100"></progress>
+        <p class="mb-0">{{ attendance_percent }}%</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">Marks</div>
+      <table class="table mb-0">
+        <thead>
+          <tr><th>Course</th><th>Exam</th><th>Marks</th><th>%</th></tr>
+        </thead>
+        <tbody>
+          {% for m in marks %}
+            <tr>
+              <td>{{ m.course.code }}</td>
+              <td>{{ m.get_exam_type_display }}</td>
+              <td>{{ m.marks_obtained }} / {{ m.max_marks }}</td>
+              <td>{{ m.percentage }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="4" class="text-muted text-center">No marks yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

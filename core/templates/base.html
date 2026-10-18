@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Student MIS{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'dashboard' %}">Student MIS</a>
+    {% if user.is_authenticated %}
+    <ul class="navbar-nav me-auto">
+      <li class="nav-item"><a class="nav-link" href="{% url 'student_list' %}">Students</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% url 'course_list' %}">Courses</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% url 'mark_attendance' %}">Attendance</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% url 'mark_list' %}">Marks</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Admin</a></li>
+    </ul>
+    <form method="post" action="{% url 'logout' %}" class="d-flex">
+      {% csrf_token %}
+      <span class="navbar-text me-3">{{ user.username }}</span>
+      <button class="btn btn-outline-light btn-sm" type="submit">Logout</button>
+    </form>
+    {% endif %}
+  </div>
+</nav>
+
+<div class="container my-4">
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show">{{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  {% endfor %}
+  {% block content %}{% endblock %}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

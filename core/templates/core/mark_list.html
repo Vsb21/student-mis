@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Marks</h3>
+  <a class="btn btn-primary" href="{% url 'mark_add' %}">Add Marks</a>
+</div>
+<table class="table table-striped bg-white">
+  <thead><tr><th>Student</th><th>Course</th><th>Exam</th><th>Marks</th><th>%</th><th></th></tr></thead>
+  <tbody>
+  {% for m in marks %}
+    <tr>
+      <td>{{ m.student }}</td><td>{{ m.course.code }}</td><td>{{ m.get_exam_type_display }}</td>
+      <td>{{ m.marks_obtained }} / {{ m.max_marks }}</td><td>{{ m.percentage }}</td>
+      <td class="text-end">
+        <a class="btn btn-sm btn-outline-primary" href="{% url 'mark_edit' m.pk %}">Edit</a>
+        <a class="btn btn-sm btn-outline-danger" href="{% url 'mark_delete' m.pk %}">Delete</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="6" class="text-center text-muted">No marks entered yet.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% if is_paginated %}
+<nav><ul class="pagination">
+  {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>{% endif %}
+  <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ paginator.num_pages }}</span></li>
+  {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>{% endif %}
+</ul></nav>
+{% endif %}
+{% endblock %}
